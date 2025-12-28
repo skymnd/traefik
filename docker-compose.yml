@@ -1,0 +1,53 @@
+services:
+  traefik:
+    image: traefik:v3.6
+    command:
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      - "--certificatesresolvers.le.acme.email=${MD_EMAIL}"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le.acme.dnschallenge.provider=cloudflare"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.transport.respondingTimeouts.readTimeout=600s"
+      - "--entrypoints.websecure.transport.respondingTimeouts.idleTimeout=600s"
+      - "--entrypoints.websecure.transport.respondingTimeouts.writeTimeout=600s"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=proxy"
+      - "--providers.file.directory=/dynamic"
+      - "--providers.file.watch=true"
+      - "--log.level=INFO"
+      - "--log.maxAge=14"
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.headerLabels.useragent=User-Agent"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+      - ./dynamic:/dynamic:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${HOMELAB_DOMAIN}`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard-auth.priority=10"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls.certResolver=le"
+      - "traefik.http.routers.dashboard.middlewares=authentik-middleware@file"
+      - "traefik.http.routers.dashboard-auth.rule=Host(`traefik.${HOMELAB_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)"
+      - "traefik.http.routers.dashboard-auth.priority=15"
+      - "traefik.http.routers.dashboard-auth.service=authentik-default-outpost@file"
+    env_file: "docker.env"
+    networks:
+      - proxy
+    restart: always
+
+networks:
+  proxy:
+    name: proxy

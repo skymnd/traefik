@@ -1,0 +1,15 @@
+http:
+  routers:
+    wireguard-router:
+      rule: Host(`wireguard.{{env "HOMELAB_DOMAIN"}}`)
+      entryPoints:
+        - websecure
+      service: wireguard
+      tls:
+        certResolver: le
+
+  services:
+    wireguard:
+      loadBalancer:
+        servers:
+          - url: http://{{env "WIREGUARD_IP"}}:10086

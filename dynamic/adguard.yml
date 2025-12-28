@@ -1,0 +1,15 @@
+http:
+  routers:
+    adguard-router:
+      rule: Host(`adguard.{{env "HOMELAB_DOMAIN"}}`)
+      entryPoints:
+        - websecure
+      service: adguard
+      tls:
+        certResolver: le
+
+  services:
+    adguard:
+      loadBalancer:
+        servers:
+          - url: http://{{env "ADGUARD_IP"}}

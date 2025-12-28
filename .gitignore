@@ -1,0 +1,6 @@
+extracted-certs/
+letsencrypt/
+.*
+*.env
+!.gitignore
+!*.template

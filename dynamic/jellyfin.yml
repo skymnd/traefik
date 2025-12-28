@@ -1,0 +1,15 @@
+http:
+  routers:
+    jellyfin-router:
+      rule: Host(`jellyfin.{{env "HOMELAB_DOMAIN"}}`)
+      entryPoints:
+        - websecure
+      service: jellyfin
+      tls:
+        certResolver: le
+
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: http://{{env "JELLYFIN_IP"}}:8096

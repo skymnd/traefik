@@ -1,0 +1,15 @@
+http:
+  routers:
+    gitea-router:
+      rule: Host(`gitea.{{env "HOMELAB_DOMAIN"}}`)
+      entryPoints:
+        - websecure
+      service: gitea
+      tls:
+        certResolver: le
+
+  services:
+    gitea:
+      loadBalancer:
+        servers:
+          - url: http://{{env "GITEA_IP"}}:3000

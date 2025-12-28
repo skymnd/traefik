@@ -1,0 +1,15 @@
+http:
+  routers:
+    grafana-router:
+      rule: Host(`grafana.{{env "HOMELAB_DOMAIN"}}`)
+      entryPoints:
+        - websecure
+      service: grafana
+      tls:
+        certResolver: le
+
+  services:
+    grafana:
+      loadBalancer:
+        servers:
+          - url: http://{{env "GRAFANA_IP"}}:3000
