@@ -1,28 +1,19 @@
 http:
-  routers:
-    authentik-router:
-      rule: Host(`authentik.{{env "HOMELAB_DOMAIN"}}`)
-      entryPoints:
-        - websecure
-      service: authentik
-      tls:
-        certResolver: le
-
   services:
     authentik:
       loadBalancer:
         servers:
-          - url: http://{{env "AUTHENTIK_IP"}}:9000
+          - url: https://login.{{env "DOMAIN"}}
 
     authentik-default-outpost:
       loadBalancer:
         servers:
-          - url: http://{{env "AUTHENTIK_IP"}}/outpost.goauthentik.io
+          - url: https://login.{{env "DOMAIN"}}/outpost.goauthentik.io
 
   middlewares:
     authentik-middleware:
       forwardAuth:
-        address: http://{{env "AUTHENTIK_IP"}}:9000/outpost.goauthentik.io/auth/traefik
+        address: https://login.{{env "DOMAIN"}}/outpost.goauthentik.io/auth/traefik
         trustForwardHeader: true
         authResponseHeaders:
           - X-authentik-username
