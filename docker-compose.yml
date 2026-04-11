@@ -39,15 +39,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`traefik.${HOMELAB_DOMAIN}`)"
       - "traefik.http.routers.dashboard.entrypoints=websecure"
-      - "traefik.http.routers.dashboard.priority=10"
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.routers.dashboard.tls.certResolver=le"
-      - "traefik.http.routers.dashboard.middlewares=authentik-middleware@file"
-      - "traefik.http.routers.dashboard-auth.rule=Host(`traefik.${HOMELAB_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)"
-      - "traefik.http.routers.dashboard-auth.entrypoints=websecure"
-      - "traefik.http.routers.dashboard-auth.priority=15"
-      - "traefik.http.routers.dashboard-auth.tls.certResolver=le"
-      - "traefik.http.routers.dashboard-auth.service=authentik-default-outpost@file"
     env_file: "docker.env"
     networks:
       - proxy
