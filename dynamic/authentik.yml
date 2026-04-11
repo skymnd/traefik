@@ -1,14 +1,9 @@
 http:
   services:
-    authentik:
-      loadBalancer:
-        servers:
-          - url: https://login.{{env "DOMAIN"}}
-
     authentik-default-outpost:
       loadBalancer:
         servers:
-          - url: https://login.{{env "DOMAIN"}}/outpost.goauthentik.io
+          - url: https://login.{{env "DOMAIN"}}
 
   middlewares:
     authentik-middleware:
