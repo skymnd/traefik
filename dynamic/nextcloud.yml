@@ -1,0 +1,25 @@
+http:
+  middlewares:
+    nextcloud-hsts:
+      headers:
+        forceSTSHeader: true
+        stsSeconds: 15552000
+        stsIncludeSubdomains: true
+        stsPreload: true
+
+  routers:
+    nextcloud-router:
+      rule: Host(`nextcloud.{{env "HOMELAB_DOMAIN"}}`)
+      entryPoints:
+        - websecure
+      service: nextcloud
+      tls:
+        certResolver: le
+      middlewares:
+        - nextcloud-hsts
+
+  services:
+    nextcloud:
+      loadBalancer:
+        servers:
+          - url: http://{{env "NEXTCLOUD_IP"}}:8080
