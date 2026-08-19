@@ -7,9 +7,20 @@ http:
       service: wireguard
       tls:
         certResolver: le
+    wireguard-backup-router:
+      rule: Host(`wireguard-backup.{{env "HOMELAB_DOMAIN"}}`)
+      entryPoints:
+        - websecure
+      service: wireguard-backup
+      tls:
+        certResolver: le
 
   services:
     wireguard:
       loadBalancer:
         servers:
           - url: http://{{env "WIREGUARD_IP"}}:10086
+    wireguard-backup:
+      loadBalancer:
+        servers:
+          - url: http://{{env "TRUENAS_BACKUP_IP"}}:10086
