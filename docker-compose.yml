@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v3.7.11@sha256:2b459431e350cfb7a5fd1a432f3bf7ad7787c36ef557c5344b8125e0489de589
+    image: traefik:v3.7.13@sha256:f86a2cab1b5c649070c49f883c743dd32d8485a56e3368c5f93b9e91f1e91259
     command:
       - "--accesslog"
       - "--accesslog.filepath=/var/log/traefik/access.log"
